@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CountUpStatsBar - Animated</title>
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;700&display=swap');
+
+        /* Base Container Styling */
+        .stats-container {
+            width: 100%;
+            background-color: #09090b; /* Minimal deep dark background */
+            color: #ffffff;
+            padding: 4rem 0;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        /* Horizontal Layout */
+        .stats-bar {
+            display: flex;
+            max-width: 1200px;
+            margin: 0 auto;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        /* Individual Stat Blocks & Dividers */
+        .stat-item {
+            flex: 1;
+            text-align: center;
+            border-right: 1px solid rgba(255, 255, 255, 0.15); /* Clean vertical divider */
+            padding: 0 1.5rem;
+        }
+
+        /* Remove border from the last item */
+        .stat-item:last-child {
+            border-right: none;
+        }
+
+        /* Sharp Typography for Numbers */
+        .stat-number {
+            font-size: 3.5rem;
+            font-weight: 700;
+            line-height: 1;
+            margin-bottom: 0.5rem;
+            letter-spacing: -0.03em; /* Tight tracking for sharp look */
+            display: flex;
+            justify-content: center;
+            align-items: baseline;
+        }
+
+        /* Minimal Typography for Labels */
+        .stat-label {
+            font-size: 0.85rem;
+            font-weight: 500;
+            text-transform: uppercase;
+            letter-spacing: 0.15em; /* Wide tracking for modern contrast */
+            color: #a1a1aa; /* Muted gray */
+        }
+
+        /* Responsive Design for Mobile */
+        @media (max-width: 768px) {
+            .stats-bar {
+                flex-direction: column;
+            }
+            
+            .stat-item {
+                border-right: none;
+                border-bottom: 1px solid rgba(255, 255, 255, 0.15); /* Horizontal divider on mobile */
+                padding: 2.5rem 0;
+                width: 80%;
+                margin: 0 auto;
+            }
+            
+            .stat-item:last-child {
+                border-bottom: none;
+            }
+        }
+    </style>
+</head>
+<body style="margin: 0; background-color: #f4f4f5;">
+    <!-- Spacer just to demonstrate the scroll effect -->
+    <div style="height: 100vh; display: flex; align-items: center; justify-content: center;">
+        <p style="font-family: 'Inter', sans-serif; color: #71717a; font-size: 1.2rem;">Scroll down to see the animation ↓</p>
+    </div>
+
+    <!-- The Stats Bar -->
+    <section class="stats-container">
+        <div class="stats-bar">
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="counter" data-target="30">0</span>+
+                </div>
+                <div class="stat-label">Years Experience</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="counter" data-target="250">0</span>
+                </div>
+                <div class="stat-label">Projects Shipped</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="counter" data-target="99">0</span>%
+                </div>
+                <div class="stat-label">Client Satisfaction</div>
+            </div>
+            
+            <div class="stat-item">
+                <div class="stat-number">
+                    <span class="counter" data-target="15">0</span>M
+                </div>
+                <div class="stat-label">Lines of Code</div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Spacer to demonstrate scrolling past it -->
+    <div style="height: 50vh;"></div>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            // Easing function: makes the animation slow down as it reaches the end
+            const easeOutCubic = (t) => 1 - Math.pow(1 - t, 3);
+
+            const animateValue = (obj, start, end, duration) => {
+                let startTimestamp = null;
+                const step = (timestamp) => {
+                    if (!startTimestamp) startTimestamp = timestamp;
+                    
+                    // Calculate progress (0 to 1)
+                    const progress = Math.min((timestamp - startTimestamp) / duration, 1);
+                    
+                    // Apply easing
+                    const easeProgress = easeOutCubic(progress);
+                    
+                    // Update the DOM element
+                    obj.innerHTML = Math.floor(easeProgress * (end - start) + start);
+                    
+                    if (progress < 1) {
+                        window.requestAnimationFrame(step);
+                    } else {
+                        obj.innerHTML = end; // Ensure exact final number is set
+                    }
+                };
+                window.requestAnimationFrame(step);
+            };
+
+            // Intersection Observer setup
+            const observerOptions = {
+                root: null,
+                rootMargin: '0px',
+                threshold: 0.5 // Triggers when 50% of the bar is visible on screen
+            };
+
+            const observer = new IntersectionObserver((entries, observer) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const counters = entry.target.querySelectorAll('.counter');
+                        counters.forEach(counter => {
+                            const target = parseInt(counter.getAttribute('data-target'), 10);
+                            // Animate from 0 to target over 2000 milliseconds (2 seconds)
+                            animateValue(counter, 0, target, 2000); 
+                        });
+                        // Unobserve so it only animates once per page load
+                        observer.unobserve(entry.target);
+                    }
+                });
+            }, observerOptions);
+
+            const statsSection = document.querySelector('.stats-container');
+            if (statsSection) {
+                observer.observe(statsSection);
+            }
+        });
+    </script>
+</body>
+</html>
