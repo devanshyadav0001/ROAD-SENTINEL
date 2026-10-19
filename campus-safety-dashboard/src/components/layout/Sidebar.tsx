@@ -11,12 +11,14 @@ import {
   Shield,
   ChevronLeft,
   ChevronRight,
+  Gauge,
 } from "lucide-react";
 import { cn } from "@/lib/utils";
 import SidebarNavItem from "@/components/ui/SidebarNavItem";
 
 const navItems = [
   { href: "/dashboard", label: "Overview", icon: LayoutDashboard },
+  { href: "/dashboard/speed", label: "Speed Tracker", icon: Gauge },
   { href: "/dashboard/reports", label: "Reports", icon: FileText },
   { href: "/dashboard/map", label: "Map View", icon: Map },
   { href: "/dashboard/analytics", label: "Analytics", icon: BarChart3 },
