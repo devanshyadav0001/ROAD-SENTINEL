@@ -234,44 +234,64 @@ const INITIAL_EVENTS: SpeedEventItem[] = [
 
 const SPEED_BENTO_ITEMS: MagicBentoItem[] = [
   {
-    title: "85th-Percentile Velocity",
-    description: "Interactive scrubbing over 24-hour P85 speeds with real-time breach alerts",
+    title: "85th-Percentile Velocity Profile",
+    description: "Interactive scrubbing over 24-hour P85 speeds with real-time breach comparison against posted limits",
     visual: "analytics",
-    label: "Speed Distribution",
+    label: "Velocity Profiling",
+    colSpan: 2,
+    rowSpan: 2,
   },
   {
-    title: "Hourly Trip Exposure",
-    description: "Volume density histogram across monitored Kamand Valley road segments",
+    title: "Hourly Trip Density & Exposure",
+    description: "Volume density histogram across monitored Kamand Valley road segments (156 trips logged today)",
     visual: "dashboard",
-    label: "Traffic Density",
+    label: "Traffic Exposure",
+    colSpan: 2,
+    rowSpan: 1,
   },
   {
-    title: "Slowdown & Hazard Linkage",
-    description: "Autonomous correlation connecting deceleration clusters with active road complaints",
-    visual: "collaboration",
     label: "Hazard Grounding",
-    colSpan: 2,
-    rowSpan: 2,
+    colSpan: 1,
+    rowSpan: 1,
+    content: (
+      <div className="flex flex-col justify-between h-full py-1">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-rose-400">Hazard Slowdown</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-rose-950/80 text-rose-300 border border-rose-800/40 font-mono">CMP-021</span>
+        </div>
+        <div className="my-2">
+          <div className="text-2xl font-black text-rose-400 font-mono">16 km/h</div>
+          <div className="text-xs font-semibold text-foreground mt-0.5">North Campus Link Road</div>
+          <div className="text-[11px] text-muted leading-tight mt-1">Deep pothole cluster causing severe vehicle braking (-60% vs limit).</div>
+        </div>
+        <div className="text-[10px] font-semibold text-rose-400/90 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-rose-500 animate-pulse" />
+          <span>Active Deceleration Shockwave</span>
+        </div>
+      </div>
+    ),
   },
   {
-    title: "Hysteresis Anomaly Engine",
-    description: "5-min rollup worker analyzes sustained overspeed events before escalating to authorities",
-    visual: "automation",
-    label: "Automated Detection",
-    colSpan: 2,
-    rowSpan: 2,
-  },
-  {
-    title: "Multi-Source Sensor Mesh",
-    description: "Unified ingestion from vehicle GPS logger apps, 24GHz edge radar, and PostGIS network",
-    visual: "integration",
-    label: "Telemetry Mesh",
-  },
-  {
-    title: "Privacy Buffer & RBAC",
-    description: "200m first/last trip trimming, cryptographic device tokens, and audit trails",
-    visual: "security",
-    label: "Security & Privacy",
+    label: "Repair Verification",
+    colSpan: 1,
+    rowSpan: 1,
+    content: (
+      <div className="flex flex-col justify-between h-full py-1">
+        <div className="flex items-center justify-between">
+          <span className="text-[11px] font-bold uppercase tracking-wider text-emerald-400">Post-Fix Telemetry</span>
+          <span className="text-[10px] px-1.5 py-0.5 rounded bg-emerald-950/80 text-emerald-300 border border-emerald-800/40 font-mono">14-Day Audit</span>
+        </div>
+        <div className="my-2">
+          <div className="text-2xl font-black text-emerald-400 font-mono">+112.5%</div>
+          <div className="text-xs font-semibold text-foreground mt-0.5">Speed Recovery Verified</div>
+          <div className="text-[11px] text-muted leading-tight mt-1">Median speed restored from 16 km/h to 34 km/h after pothole patch.</div>
+        </div>
+        <div className="text-[10px] font-semibold text-emerald-400/90 flex items-center gap-1">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500" />
+          <span>Verdict: Verified Improved</span>
+        </div>
+      </div>
+    ),
   },
 ];
 

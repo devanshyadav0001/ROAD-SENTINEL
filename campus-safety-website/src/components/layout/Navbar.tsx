@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { Shield } from "lucide-react";
+import { Shield, Sparkles } from "lucide-react";
 import { cn } from "@/lib/utils";
 import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
 
@@ -31,6 +31,12 @@ const socialItems: StaggeredMenuSocialItem[] = [
 export default function Navbar() {
   const pathname = usePathname();
 
+  const triggerStaggeredMenu = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("toggle-staggered-menu"));
+    }
+  };
+
   return (
     <>
       <nav className="sticky top-0 z-40 bg-white/85 dark:bg-[#07130d]/85 backdrop-blur-md border-b border-border/80 transition-colors">
@@ -47,13 +53,13 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop Navigation Links */}
-            <div className="hidden md:flex items-center gap-1.5 mr-28">
+            <div className="hidden md:flex items-center gap-2 mr-24">
               {navLinks.map((link) => (
                 <Link
                   key={link.href}
                   href={link.href}
                   className={cn(
-                    "px-3.5 py-1.5 rounded-lg text-sm font-medium transition-colors",
+                    "px-3 py-1.5 rounded-lg text-sm font-medium transition-colors",
                     pathname === link.href
                       ? "bg-primary/10 text-primary font-semibold"
                       : "text-muted hover:text-foreground hover:bg-gray-100 dark:hover:bg-zinc-800/60"
@@ -62,12 +68,25 @@ export default function Navbar() {
                   {link.label}
                 </Link>
               ))}
+
               <Link
                 href="/report"
-                className="ml-2 px-4 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-all shadow-sm hover:shadow"
+                className="ml-1 px-3.5 py-1.5 bg-primary text-white rounded-lg text-sm font-medium hover:bg-primary-dark transition-all shadow-sm hover:shadow"
               >
                 Report Now
               </Link>
+
+              {/* Direct Staggered Menu Trigger */}
+              <button
+                onClick={triggerStaggeredMenu}
+                className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-600 dark:text-emerald-300 hover:bg-emerald-500/25 transition-all font-semibold text-xs"
+                title="Open Staggered Menu"
+                type="button"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-emerald-500" />
+                <span>Menu</span>
+                <span className="text-[10px] bg-emerald-500/25 px-1 rounded font-mono">GSAP</span>
+              </button>
             </div>
           </div>
         </div>

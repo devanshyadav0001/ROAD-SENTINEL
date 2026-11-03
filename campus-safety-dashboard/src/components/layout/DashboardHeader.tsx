@@ -1,6 +1,6 @@
 "use client";
 
-import { Search, Bell, User } from "lucide-react";
+import { Search, Bell, User, Sparkles } from "lucide-react";
 import { usePathname } from "next/navigation";
 import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
 
@@ -35,6 +35,12 @@ export default function DashboardHeader() {
   const pathname = usePathname();
   const title = breadcrumbMap[pathname] || "Dashboard";
 
+  const triggerStaggeredMenu = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("toggle-staggered-menu"));
+    }
+  };
+
   return (
     <>
       <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm z-30 relative">
@@ -46,6 +52,18 @@ export default function DashboardHeader() {
 
         {/* Actions */}
         <div className="flex items-center gap-3 mr-24">
+          {/* Quick Header Staggered Menu Trigger */}
+          <button
+            onClick={triggerStaggeredMenu}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-300 transition-all font-semibold text-xs shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+            title="Open React Bits Staggered Menu"
+            type="button"
+          >
+            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
+            <span>Menu</span>
+            <span className="text-[10px] bg-emerald-500/30 px-1 rounded text-emerald-300 font-mono">GSAP</span>
+          </button>
+
           {/* Search */}
           <div className="relative hidden md:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
