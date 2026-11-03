@@ -1,6 +1,7 @@
 'use client';
 
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
+import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
@@ -55,6 +56,15 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 }) => {
   const [open, setOpen] = useState(false);
   const openRef = useRef(false);
+  const router = useRouter();
+
+  const handleLinkClick = useCallback((e: React.MouseEvent, href: string) => {
+    closeMenu();
+    if (href.startsWith('/') && !href.startsWith('//')) {
+      e.preventDefault();
+      router.push(href);
+    }
+  }, []);
 
   const panelRef = useRef<HTMLElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
@@ -523,7 +533,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                         href={it.link}
                         aria-label={it.ariaLabel}
                         data-index={idx + 1}
-                        onClick={closeMenu}
+                        onClick={(e) => handleLinkClick(e, it.link)}
                       >
                         <span className="sm-panel-itemLabel inline-block [transform-origin:50%_100%] will-change-transform">
                           {it.label}
@@ -559,6 +569,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                         target={s.link.startsWith('http') ? '_blank' : undefined}
                         rel={s.link.startsWith('http') ? 'noopener noreferrer' : undefined}
                         className="sm-socials-link text-[0.95rem] font-medium text-zinc-400 hover:text-white no-underline relative inline-block py-[2px] transition-colors"
+                        onClick={(e) => handleLinkClick(e, s.link)}
                       >
                         {s.label}
                       </a>

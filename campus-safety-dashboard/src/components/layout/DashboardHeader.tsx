@@ -1,6 +1,7 @@
 "use client";
 
-import { Search, Bell, User, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Search, Bell, User, Shield } from "lucide-react";
 import { usePathname } from "next/navigation";
 import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
 
@@ -17,17 +18,18 @@ const breadcrumbMap: Record<string, string> = {
 const dashboardMenuItems: StaggeredMenuItem[] = [
   { label: "Overview", ariaLabel: "Dashboard overview", link: "/dashboard" },
   { label: "Speed Tracker", ariaLabel: "Speed Tracker observatory", link: "/dashboard/speed" },
-  { label: "Enforcement", ariaLabel: "Edge radar & camera enforcement", link: "/dashboard/enforcement" },
-  { label: "Reports", ariaLabel: "Citizen hazard reports", link: "/dashboard/reports" },
+  { label: "Traffic Enforcement", ariaLabel: "Edge radar & camera enforcement", link: "/dashboard/enforcement" },
+  { label: "Hazard Reports", ariaLabel: "Citizen hazard reports", link: "/dashboard/reports" },
   { label: "Map View", ariaLabel: "Campus spatial hazard map", link: "/dashboard/map" },
   { label: "Analytics", ariaLabel: "Trends and resolution performance", link: "/dashboard/analytics" },
+  { label: "System Settings", ariaLabel: "System settings and calibration", link: "/dashboard/settings" },
   { label: "Public Portal", ariaLabel: "Citizen hazard reporting portal", link: "http://localhost:3000" },
 ];
 
 const dashboardSocialItems: StaggeredMenuSocialItem[] = [
   { label: "IIT Mandi", link: "https://iitmandi.ac.in" },
   { label: "API Docs (/docs)", link: "http://127.0.0.1:8000/docs" },
-  { label: "Public Portal (:3000)", link: "http://localhost:3000" },
+  { label: "Public Website (:3000)", link: "http://localhost:3000" },
   { label: "GitHub Repository", link: "https://github.com/devanshyadav0001/ROAD-SENTINEL" },
 ];
 
@@ -35,64 +37,46 @@ export default function DashboardHeader() {
   const pathname = usePathname();
   const title = breadcrumbMap[pathname] || "Dashboard";
 
-  const triggerStaggeredMenu = () => {
-    if (typeof window !== "undefined") {
-      window.dispatchEvent(new CustomEvent("toggle-staggered-menu"));
-    }
-  };
-
   return (
     <>
-      <header className="h-16 border-b border-border flex items-center justify-between px-3 sm:px-6 bg-card/50 backdrop-blur-sm z-30 relative">
-        {/* Left: Mobile Menu Trigger + Logo + Breadcrumb */}
-        <div className="flex items-center gap-2.5 min-w-0">
-          <button
-            onClick={triggerStaggeredMenu}
-            className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 transition-all flex-shrink-0"
-            title="Open Staggered Menu"
-            type="button"
-          >
-            <Sparkles className="w-4 h-4" />
-          </button>
+      <header className="h-16 border-b border-border flex items-center justify-between px-4 sm:px-6 bg-card/60 backdrop-blur-md z-30 relative">
+        {/* Left: Brand Logo & Section Breadcrumb (Replaces static sidebar) */}
+        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
+          <Link href="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
+            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center group-hover:bg-primary-dark transition-all shadow-sm">
+              <Shield className="w-5 h-5 text-white" />
+            </div>
+            <span className="font-bold text-base sm:text-lg text-foreground whitespace-nowrap">
+              SafeRoads <span className="text-primary font-extrabold">Admin</span>
+            </span>
+          </Link>
 
-          <div className="min-w-0">
-            <p className="text-[10px] text-muted hidden sm:block">Dashboard</p>
-            <h1 className="text-sm sm:text-lg font-semibold text-foreground truncate">{title}</h1>
+          <div className="hidden md:flex items-center gap-2 pl-3 border-l border-border text-sm text-muted">
+            <span className="text-zinc-600">/</span>
+            <span className="font-semibold text-foreground truncate">{title}</span>
           </div>
         </div>
 
-        {/* Actions */}
-        <div className="flex items-center gap-2 sm:gap-3 mr-16 sm:mr-24">
-          {/* Quick Header Staggered Menu Trigger (desktop / tablet) */}
-          <button
-            onClick={triggerStaggeredMenu}
-            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-300 transition-all font-semibold text-xs shadow-[0_0_12px_rgba(16,185,129,0.2)]"
-            title="Open React Bits Staggered Menu"
-            type="button"
-          >
-            <Sparkles className="w-3.5 h-3.5 text-emerald-400" />
-            <span>Menu</span>
-            <span className="text-[10px] bg-emerald-500/30 px-1 rounded text-emerald-300 font-mono">GSAP</span>
-          </button>
-
+        {/* Right: Actions + Spacer for Floating Staggered Menu */}
+        <div className="flex items-center gap-2.5 sm:gap-3 mr-24 sm:mr-28">
           {/* Search */}
-          <div className="relative hidden md:block">
+          <div className="relative hidden lg:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
             <input
               type="text"
               placeholder="Search reports..."
-              className="pl-9 pr-4 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-60"
+              className="pl-9 pr-4 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-52"
             />
           </div>
 
           {/* Notifications */}
-          <button className="relative p-2 rounded-lg hover:bg-card-hover transition-colors">
-            <Bell className="w-5 h-5 text-muted" />
+          <button className="relative p-2 rounded-lg hover:bg-card-hover transition-colors text-muted hover:text-foreground">
+            <Bell className="w-5 h-5" />
             <span className="absolute top-1.5 right-1.5 w-2 h-2 bg-destructive rounded-full" />
           </button>
 
-          {/* User */}
-          <div className="flex items-center gap-2 pl-3 border-l border-border">
+          {/* User Profile */}
+          <div className="flex items-center gap-2 pl-2 border-l border-border">
             <div className="w-8 h-8 bg-primary/20 rounded-full flex items-center justify-center">
               <User className="w-4 h-4 text-primary" />
             </div>
@@ -101,7 +85,7 @@ export default function DashboardHeader() {
         </div>
       </header>
 
-      {/* React Bits StaggeredMenu Overlay for Admin Dashboard */}
+      {/* React Bits StaggeredMenu Overlay - Primary Navigation for Dashboard */}
       <StaggeredMenu
         isFixed={true}
         position="right"
