@@ -6,6 +6,7 @@ import {
   PaintBucket,
   TreePine,
   HelpCircle,
+  Car,
 } from "lucide-react";
 import type { HazardCategory } from "@/types";
 
@@ -16,6 +17,7 @@ const iconMap: Record<HazardCategory, React.ComponentType<{ className?: string }
   roadside_obstruction: TreePine,
   drainage_issue: Droplets,
   poor_lighting: Lightbulb,
+  driver_behavior: Car,
   other: HelpCircle,
 };
 

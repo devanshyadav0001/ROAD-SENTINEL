@@ -31,6 +31,7 @@ import {
   ReferenceLine,
 } from "recharts";
 import { cn } from "@/lib/utils";
+import MagicBento, { MagicBentoItem } from "@/components/ui/MagicBento";
 
 interface SegmentData {
   id: number;
@@ -231,6 +232,49 @@ const INITIAL_EVENTS: SpeedEventItem[] = [
   },
 ];
 
+const SPEED_BENTO_ITEMS: MagicBentoItem[] = [
+  {
+    title: "85th-Percentile Velocity",
+    description: "Interactive scrubbing over 24-hour P85 speeds with real-time breach alerts",
+    visual: "analytics",
+    label: "Speed Distribution",
+  },
+  {
+    title: "Hourly Trip Exposure",
+    description: "Volume density histogram across monitored Kamand Valley road segments",
+    visual: "dashboard",
+    label: "Traffic Density",
+  },
+  {
+    title: "Slowdown & Hazard Linkage",
+    description: "Autonomous correlation connecting deceleration clusters with active road complaints",
+    visual: "collaboration",
+    label: "Hazard Grounding",
+    colSpan: 2,
+    rowSpan: 2,
+  },
+  {
+    title: "Hysteresis Anomaly Engine",
+    description: "5-min rollup worker analyzes sustained overspeed events before escalating to authorities",
+    visual: "automation",
+    label: "Automated Detection",
+    colSpan: 2,
+    rowSpan: 2,
+  },
+  {
+    title: "Multi-Source Sensor Mesh",
+    description: "Unified ingestion from vehicle GPS logger apps, 24GHz edge radar, and PostGIS network",
+    visual: "integration",
+    label: "Telemetry Mesh",
+  },
+  {
+    title: "Privacy Buffer & RBAC",
+    description: "200m first/last trip trimming, cryptographic device tokens, and audit trails",
+    visual: "security",
+    label: "Security & Privacy",
+  },
+];
+
 export default function SpeedTrackerPage() {
   const [segments, setSegments] = useState<SegmentData[]>(INITIAL_SEGMENTS);
   const [events, setEvents] = useState<SpeedEventItem[]>(INITIAL_EVENTS);
@@ -410,6 +454,38 @@ export default function SpeedTrackerPage() {
           </div>
           <p className="text-[11px] text-muted mt-1">Split in ~150m PostGIS geometries</p>
         </div>
+      </div>
+
+      {/* ─── REACT BITS MAGIC BENTO ANALYTICS HUB ─── */}
+      <div className="space-y-3">
+        <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2">
+          <div>
+            <h3 className="text-base font-semibold text-foreground flex items-center gap-2">
+              <Sparkles className="w-4 h-4 text-emerald-400" />
+              <span>Speed Telemetry Analytics Hub</span>
+              <span className="text-xs px-2 py-0.5 rounded-full bg-emerald-950/80 text-emerald-400 border border-emerald-800/40 font-mono">
+                Interactive Magic Bento
+              </span>
+            </h3>
+            <p className="text-xs text-muted mt-0.5">
+              Live cursor spotlights, velocity scrubbing, trip exposure histogram, and automated hazard correlation
+            </p>
+          </div>
+        </div>
+
+        <MagicBento
+          items={SPEED_BENTO_ITEMS}
+          columns={4}
+          rowHeight={210}
+          gap={14}
+          radius={18}
+          theme="dark"
+          glowColor="#10b981"
+          enableBorderGlow={true}
+          enableSpotlight={true}
+          spotlightRadius={320}
+          clickEffect={true}
+        />
       </div>
 
       {/* Main Grid: Segments Monitor + Segment Details Drawer */}
