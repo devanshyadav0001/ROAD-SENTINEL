@@ -8,7 +8,7 @@ Detects:
 
 import json
 from datetime import datetime, timezone
-from typing import Any, Dict, List
+from typing import Any, Dict, List, Optional
 
 from sqlalchemy import text, select
 from sqlalchemy.ext.asyncio import AsyncSession
