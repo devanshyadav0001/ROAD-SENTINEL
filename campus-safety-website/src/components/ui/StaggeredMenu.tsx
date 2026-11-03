@@ -490,11 +490,24 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
         >
           <div className="sm-panel-inner flex-1 flex flex-col gap-6 justify-between">
             <div>
-              <div className="mb-6 pb-4 border-b border-zinc-800 flex items-center justify-between">
-                <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400">
-                  SafeRoads Observatory
-                </span>
-                <span className="text-[10px] font-mono text-zinc-500">IIT Mandi</span>
+              <div className="mb-4 sm:mb-6 pb-3 sm:pb-4 border-b border-zinc-800 flex items-center justify-between">
+                <div className="flex items-center gap-2">
+                  <span className="w-2 h-2 rounded-full bg-emerald-400 animate-pulse" />
+                  <span className="text-[11px] font-mono font-bold uppercase tracking-widest text-emerald-400">
+                    SafeRoads Observatory
+                  </span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[10px] font-mono text-zinc-500 hidden sm:inline">IIT Mandi</span>
+                  <button
+                    onClick={closeMenu}
+                    className="w-7 h-7 rounded-full bg-zinc-800/90 hover:bg-zinc-700 flex items-center justify-center text-zinc-300 hover:text-white transition-colors text-xs font-bold"
+                    aria-label="Close menu"
+                    type="button"
+                  >
+                    ✕
+                  </button>
+                </div>
               </div>
 
               <ul
@@ -506,7 +519,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
                   items.map((it, idx) => (
                     <li className="sm-panel-itemWrap relative overflow-hidden leading-none" key={it.label + idx}>
                       <a
-                        className="sm-panel-item relative text-[#fafafa] hover:text-[#10b981] font-extrabold text-[2.4rem] sm:text-[3.2rem] cursor-pointer leading-none tracking-[-1.5px] uppercase transition-colors duration-150 inline-block no-underline pr-[1.4em]"
+                        className="sm-panel-item relative text-[#fafafa] hover:text-[#10b981] font-extrabold text-[1.75rem] xs:text-[2.2rem] sm:text-[3rem] cursor-pointer leading-tight tracking-[-1px] sm:tracking-[-1.5px] uppercase transition-colors duration-150 inline-block no-underline pr-[1.2em]"
                         href={it.link}
                         aria-label={it.ariaLabel}
                         data-index={idx + 1}
@@ -560,7 +573,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
       <style>{`
 .sm-scope .staggered-menu-wrapper { position: relative; width: 100%; height: 100%; z-index: 9999; pointer-events: none; }
-.sm-scope .staggered-menu-header { position: fixed; top: 0; right: 0; display: flex; align-items: center; justify-content: flex-end; padding: 1.25em 2em; background: transparent; pointer-events: none; z-index: 110; }
+.sm-scope .staggered-menu-header { position: fixed; top: 0; right: 0; display: flex; align-items: center; justify-content: flex-end; padding: 1rem 1.25rem; background: transparent; pointer-events: none; z-index: 110; }
 .sm-scope .staggered-menu-header > * { pointer-events: auto; }
 .sm-scope .sm-toggle { position: relative; display: inline-flex; align-items: center; gap: 0.45rem; cursor: pointer; line-height: 1; overflow: visible; }
 .sm-scope .sm-toggle-textWrap { position: relative; margin-right: 0.3em; display: inline-block; height: 1em; overflow: hidden; white-space: nowrap; width: var(--sm-toggle-width, auto); min-width: var(--sm-toggle-width, auto); }
@@ -569,7 +582,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-icon { position: relative; width: 14px; height: 14px; flex: 0 0 14px; display: inline-flex; align-items: center; justify-content: center; will-change: transform; }
 .sm-scope .sm-panel-itemWrap { position: relative; overflow: hidden; line-height: 1; }
 .sm-scope .sm-icon-line { position: absolute; left: 50%; top: 50%; width: 100%; height: 2px; background: currentColor; border-radius: 2px; transform: translate(-50%, -50%); will-change: transform; }
-.sm-scope .staggered-menu-panel { position: fixed; top: 0; right: 0; width: clamp(320px, 44vw, 500px); height: 100%; background: #07130d; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; flex-direction: column; padding: 6em 2.5em 2.5em 2.5em; overflow-y: auto; z-index: 100; border-left: 1px solid rgba(16, 185, 129, 0.25); }
+.sm-scope .staggered-menu-panel { position: fixed; top: 0; right: 0; width: clamp(320px, 44vw, 500px); height: 100%; background: #07130d; backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px); display: flex; flex-direction: column; padding: 5rem 2rem 2rem 2rem; overflow-y: auto; overscroll-behavior: contain; z-index: 100; border-left: 1px solid rgba(16, 185, 129, 0.25); }
 .sm-scope [data-position='left'] .staggered-menu-panel { right: auto; left: 0; border-left: none; border-right: 1px solid rgba(16, 185, 129, 0.25); }
 .sm-scope .sm-prelayers { position: fixed; top: 0; right: 0; bottom: 0; width: clamp(320px, 44vw, 500px); pointer-events: none; z-index: 90; }
 .sm-scope [data-position='left'] .sm-prelayers { right: auto; left: 0; }
@@ -581,13 +594,21 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 .sm-scope .sm-socials-list .sm-socials-link { opacity: 0.85; transition: opacity 0.2s ease, color 0.2s ease; }
 .sm-scope .sm-socials-list .sm-socials-link:hover { opacity: 1; color: var(--sm-accent, #10b981); }
 .sm-scope .sm-panel-list { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.75rem; }
-.sm-scope .sm-panel-item { position: relative; color: #f4f4f5; font-weight: 800; cursor: pointer; line-height: 1; letter-spacing: -1.5px; text-transform: uppercase; transition: color 0.2s ease; display: inline-block; text-decoration: none; padding-right: 1.4em; }
+.sm-scope .sm-panel-item { position: relative; color: #f4f4f5; font-weight: 800; cursor: pointer; line-height: 1.1; letter-spacing: -1.5px; text-transform: uppercase; transition: color 0.2s ease; display: inline-block; text-decoration: none; padding-right: 1.4em; }
 .sm-scope .sm-panel-itemLabel { display: inline-block; will-change: transform; transform-origin: 50% 100%; }
 .sm-scope .sm-panel-item:hover { color: var(--sm-accent, #10b981); }
 .sm-scope .sm-panel-list[data-numbering] { counter-reset: smItem; }
-.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.15em; right: 2.2em; font-size: 14px; font-weight: 700; font-family: monospace; color: var(--sm-accent, #10b981); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); }
+.sm-scope .sm-panel-list[data-numbering] .sm-panel-item::after { counter-increment: smItem; content: counter(smItem, decimal-leading-zero); position: absolute; top: 0.15em; right: 0.25em; font-size: 13px; font-weight: 700; font-family: monospace; color: var(--sm-accent, #10b981); letter-spacing: 0; pointer-events: none; user-select: none; opacity: var(--sm-num-opacity, 0); }
 @media (max-width: 1024px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; } .sm-scope .sm-prelayers { width: 100%; } }
-@media (max-width: 640px) { .sm-scope .staggered-menu-panel { width: 100%; left: 0; right: 0; padding: 5em 1.5em 2em 1.5em; } .sm-scope .sm-panel-item { font-size: 2.2rem; } }
+@media (max-width: 640px) {
+  .sm-scope .staggered-menu-header { padding: 0.75rem 0.85rem !important; }
+  .sm-scope .staggered-menu-panel { width: 100vw !important; max-width: 100vw !important; left: 0 !important; right: 0 !important; padding: 4.25rem 1.25rem 1.75rem 1.25rem !important; }
+  .sm-scope .sm-prelayers { width: 100vw !important; max-width: 100vw !important; left: 0 !important; right: 0 !important; }
+  .sm-scope .sm-panel-item { font-size: 1.75rem !important; letter-spacing: -1px !important; }
+}
+@media (max-width: 380px) {
+  .sm-scope .sm-panel-item { font-size: 1.45rem !important; }
+}
       `}</style>
     </div>
   );

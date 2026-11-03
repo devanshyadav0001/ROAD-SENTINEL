@@ -88,6 +88,24 @@ export default function Navbar() {
                 <span className="text-[10px] bg-emerald-500/25 px-1 rounded font-mono">GSAP</span>
               </button>
             </div>
+
+            {/* Mobile Actions: Report Now + Staggered Menu Trigger */}
+            <div className="flex md:hidden items-center gap-2 mr-16">
+              <Link
+                href="/report"
+                className="px-2.5 py-1.5 bg-primary text-white rounded-lg text-xs font-semibold hover:bg-primary-dark transition-all shadow-sm"
+              >
+                Report
+              </Link>
+              <button
+                onClick={triggerStaggeredMenu}
+                className="flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/35 text-emerald-400 hover:bg-emerald-500/25 transition-all"
+                title="Open Staggered Menu"
+                type="button"
+              >
+                <Sparkles className="w-4 h-4" />
+              </button>
+            </div>
           </div>
         </div>
       </nav>

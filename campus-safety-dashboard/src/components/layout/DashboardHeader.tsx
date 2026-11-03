@@ -43,19 +43,30 @@ export default function DashboardHeader() {
 
   return (
     <>
-      <header className="h-16 border-b border-border flex items-center justify-between px-6 bg-card/50 backdrop-blur-sm z-30 relative">
-        {/* Breadcrumb */}
-        <div>
-          <p className="text-xs text-muted">Dashboard</p>
-          <h1 className="text-lg font-semibold text-foreground">{title}</h1>
+      <header className="h-16 border-b border-border flex items-center justify-between px-3 sm:px-6 bg-card/50 backdrop-blur-sm z-30 relative">
+        {/* Left: Mobile Menu Trigger + Logo + Breadcrumb */}
+        <div className="flex items-center gap-2.5 min-w-0">
+          <button
+            onClick={triggerStaggeredMenu}
+            className="md:hidden flex items-center justify-center w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 hover:bg-emerald-500/25 transition-all flex-shrink-0"
+            title="Open Staggered Menu"
+            type="button"
+          >
+            <Sparkles className="w-4 h-4" />
+          </button>
+
+          <div className="min-w-0">
+            <p className="text-[10px] text-muted hidden sm:block">Dashboard</p>
+            <h1 className="text-sm sm:text-lg font-semibold text-foreground truncate">{title}</h1>
+          </div>
         </div>
 
         {/* Actions */}
-        <div className="flex items-center gap-3 mr-24">
-          {/* Quick Header Staggered Menu Trigger */}
+        <div className="flex items-center gap-2 sm:gap-3 mr-16 sm:mr-24">
+          {/* Quick Header Staggered Menu Trigger (desktop / tablet) */}
           <button
             onClick={triggerStaggeredMenu}
-            className="flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-300 transition-all font-semibold text-xs shadow-[0_0_12px_rgba(16,185,129,0.2)]"
+            className="hidden sm:flex items-center gap-1.5 px-3 py-1.5 rounded-full bg-emerald-500/15 border border-emerald-500/40 text-emerald-300 hover:bg-emerald-500/25 hover:border-emerald-300 transition-all font-semibold text-xs shadow-[0_0_12px_rgba(16,185,129,0.2)]"
             title="Open React Bits Staggered Menu"
             type="button"
           >

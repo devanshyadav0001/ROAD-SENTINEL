@@ -81,14 +81,14 @@ const TITLE_CLASS =
   'm-0 text-[15px] leading-5 font-semibold tracking-[-0.01em] text-[color:var(--mb-ink)]';
 const DESCRIPTION_CLASS =
   'm-0 text-[12.5px] leading-[1.45] text-[color:var(--mb-muted)]';
-const CHART_CLASS = 'magic-bento__chart flex min-h-0 flex-1 touch-pan-y flex-col';
+const CHART_CLASS = 'magic-bento__chart flex min-h-0 flex-1 touch-none select-none flex-col';
 const FIGURE_CLASS = 'flex min-w-0 items-baseline gap-1.5 whitespace-nowrap';
 const FIGURE_VALUE_CLASS =
   'text-[18px] leading-[22px] font-bold tracking-[-0.02em] text-emerald-400 font-mono tabular-nums';
 const FIGURE_NOTE_CLASS =
   'min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-purple-400 font-medium tabular-nums';
 const PLOT_CLASS =
-  'relative mt-1.5 min-h-0 flex-1 [&_svg]:absolute [&_svg]:inset-0 [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:overflow-visible';
+  'relative mt-1.5 min-h-0 flex-1 touch-none select-none [&_svg]:absolute [&_svg]:inset-0 [&_svg]:block [&_svg]:h-full [&_svg]:w-full [&_svg]:overflow-visible';
 const CHART_AREA_CLASS = 'magic-bento__chart-area [fill:rgba(16,185,129,0.18)]';
 const CHART_LINE_CLASS =
   'magic-bento__chart-line fill-none stroke-emerald-400 [stroke-linecap:round] [stroke-linejoin:round] [stroke-width:2]';
@@ -300,8 +300,30 @@ const AnalyticsVisual = () => {
     if (noteRef.current) noteRef.current.textContent = `P85 Peak (+48% over limit)`;
   };
 
+  const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
+    try {
+      event.currentTarget.setPointerCapture?.(event.pointerId);
+    } catch {}
+    scrub(event);
+  };
+
+  const handlePointerUp = (event: React.PointerEvent<HTMLDivElement>) => {
+    try {
+      event.currentTarget.releasePointerCapture?.(event.pointerId);
+    } catch {}
+    rest();
+  };
+
   return (
-    <div ref={chartRef} className={CHART_CLASS} onPointerMove={scrub} onPointerDown={scrub} onPointerLeave={rest}>
+    <div
+      ref={chartRef}
+      className={CHART_CLASS}
+      onPointerMove={scrub}
+      onPointerDown={handlePointerDown}
+      onPointerUp={handlePointerUp}
+      onPointerCancel={handlePointerUp}
+      onPointerLeave={rest}
+    >
       <div className={FIGURE_CLASS}>
         <span ref={valueRef} className={FIGURE_VALUE_CLASS}>
           74 km/h
@@ -714,7 +736,7 @@ export const MagicBento: React.FC<MagicBentoProps> = ({
           '--mb-border-size': `${Math.round(Math.max(40, spotlightRadius) * 0.75)}px`
         }),
         gridTemplateColumns: `repeat(${span}, minmax(0, 1fr))`,
-        gridAutoRows: span === 1 ? `minmax(${rowHeight}px, auto)` : `${rowHeight}px`,
+        gridAutoRows: span === 1 ? `minmax(180px, auto)` : `${rowHeight}px`,
         gap: `${Math.max(0, gap)}px`,
         ...style
       }}
@@ -771,7 +793,7 @@ export const MagicBento: React.FC<MagicBentoProps> = ({
             className={CELL_CLASS}
             style={{
               gridColumn: `span ${Math.min(span, Math.max(1, Math.round(entry.colSpan ?? 1)))}`,
-              gridRow: `span ${Math.max(1, Math.round(entry.rowSpan ?? 1))}`
+              gridRow: `span ${span === 1 ? 1 : Math.max(1, Math.round(entry.rowSpan ?? 1))}`
             }}
           >
             {entry.href ? (

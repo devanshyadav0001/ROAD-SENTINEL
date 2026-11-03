@@ -7,7 +7,7 @@ export default function DashboardLayout({ children }: LayoutProps<"/dashboard">)
       <Sidebar />
       <div className="flex-1 flex flex-col md:ml-64 transition-all overflow-hidden">
         <DashboardHeader />
-        <main className="flex-1 overflow-y-auto bg-background p-4 sm:p-6 lg:p-8">
+        <main className="flex-1 overflow-y-auto bg-background p-3 sm:p-6 lg:p-8">
           {children}
         </main>
       </div>
