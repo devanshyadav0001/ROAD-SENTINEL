@@ -1,7 +1,7 @@
 "use client";
 
 import Link from "next/link";
-import { Search, Bell, User, Shield } from "lucide-react";
+import { Search, Bell, User, Shield, Menu } from "lucide-react";
 import { usePathname } from "next/navigation";
 import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
 
@@ -37,16 +37,34 @@ export default function DashboardHeader() {
   const pathname = usePathname();
   const title = breadcrumbMap[pathname] || "Dashboard";
 
+  const triggerMenu = () => {
+    if (typeof window !== "undefined") {
+      window.dispatchEvent(new CustomEvent("toggle-staggered-menu"));
+    }
+  };
+
   return (
     <>
-      <header className="h-16 border-b border-border flex items-center justify-between px-4 sm:px-6 bg-card/60 backdrop-blur-md z-30 relative">
-        {/* Left: Brand Logo & Section Breadcrumb (Replaces static sidebar) */}
-        <div className="flex items-center gap-3 sm:gap-4 min-w-0">
-          <Link href="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
-            <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center group-hover:bg-primary-dark transition-all shadow-sm">
-              <Shield className="w-5 h-5 text-white" />
+      <header className="h-16 border-b border-border flex items-center justify-between px-3 sm:px-6 bg-card/75 backdrop-blur-md z-30 relative">
+        {/* Left: Brand Logo & Menu Trigger & Section Breadcrumb */}
+        <div className="flex items-center gap-2.5 sm:gap-4 min-w-0">
+          <button
+            data-menu-trigger
+            onClick={triggerMenu}
+            className="flex items-center gap-1.5 px-3 py-1.5 rounded-xl bg-emerald-500/15 hover:bg-emerald-500/25 border border-emerald-500/35 text-emerald-400 hover:text-emerald-300 font-bold text-xs uppercase tracking-wider transition-all shadow-[0_0_12px_rgba(16,185,129,0.2)] active:scale-95 cursor-pointer flex-shrink-0"
+            title="Open Navigation Menu"
+            aria-label="Open Navigation Menu"
+            type="button"
+          >
+            <Menu className="w-4 h-4" />
+            <span className="font-mono text-[11px]">MENU</span>
+          </button>
+
+          <Link href="/dashboard" className="flex items-center gap-2 group flex-shrink-0">
+            <div className="w-8 h-8 bg-primary rounded-lg flex items-center justify-center group-hover:bg-primary-dark transition-all shadow-sm">
+              <Shield className="w-4 h-4 text-white" />
             </div>
-            <span className="font-bold text-base sm:text-lg text-foreground whitespace-nowrap">
+            <span className="font-bold text-sm sm:text-base text-foreground whitespace-nowrap">
               SafeRoads <span className="text-primary font-extrabold">Admin</span>
             </span>
           </Link>
@@ -57,15 +75,15 @@ export default function DashboardHeader() {
           </div>
         </div>
 
-        {/* Right: Actions + Spacer for Floating Staggered Menu */}
-        <div className="flex items-center gap-2.5 sm:gap-3 mr-24 sm:mr-28">
+        {/* Right: Actions */}
+        <div className="flex items-center gap-2 sm:gap-3 mr-24 sm:mr-28">
           {/* Search */}
           <div className="relative hidden lg:block">
             <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-muted" />
             <input
               type="text"
               placeholder="Search reports..."
-              className="pl-9 pr-4 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-52"
+              className="pl-9 pr-4 py-2 bg-input border border-border rounded-lg text-sm text-foreground placeholder:text-muted focus:outline-none focus:ring-2 focus:ring-primary/30 focus:border-primary w-48 xl:w-56"
             />
           </div>
 

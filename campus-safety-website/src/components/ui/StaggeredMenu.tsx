@@ -3,6 +3,7 @@
 import React, { useCallback, useEffect, useLayoutEffect, useRef, useState } from 'react';
 import { useRouter } from 'next/navigation';
 import { gsap } from 'gsap';
+import { Menu, X } from 'lucide-react';
 
 const useIsomorphicLayoutEffect = typeof window === 'undefined' ? useEffect : useLayoutEffect;
 
@@ -58,14 +59,6 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
   const openRef = useRef(false);
   const router = useRouter();
 
-  const handleLinkClick = useCallback((e: React.MouseEvent, href: string) => {
-    closeMenu();
-    if (href.startsWith('/') && !href.startsWith('//')) {
-      e.preventDefault();
-      router.push(href);
-    }
-  }, []);
-
   const panelRef = useRef<HTMLElement | null>(null);
   const preLayersRef = useRef<HTMLDivElement | null>(null);
   const preLayerElsRef = useRef<HTMLElement[]>([]);
@@ -94,12 +87,7 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       const panel = panelRef.current;
       const preContainer = preLayersRef.current;
 
-      const plusH = plusHRef.current;
-      const plusV = plusVRef.current;
-      const icon = iconRef.current;
-      const textInner = textInnerRef.current;
-
-      if (!panel || !plusH || !plusV || !icon || !textInner) return;
+      if (!panel) return;
 
       let preLayers: HTMLElement[] = [];
       if (preContainer) {
@@ -112,12 +100,6 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
       if (preContainer) {
         gsap.set(preContainer, { xPercent: 0, opacity: 1 });
       }
-
-      gsap.set(plusH, { transformOrigin: '50% 50%', rotate: 0 });
-      gsap.set(plusV, { transformOrigin: '50% 50%', rotate: 90 });
-      gsap.set(icon, { rotate: 0, transformOrigin: '50% 50%' });
-
-      gsap.set(textInner, { yPercent: 0 });
 
       if (toggleBtnRef.current) gsap.set(toggleBtnRef.current, { color: menuButtonColor });
     });
@@ -371,6 +353,14 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
     }
   }, [playClose, animateIcon, animateColor, animateText, onMenuClose]);
 
+  const handleLinkClick = useCallback((e: React.MouseEvent, href: string) => {
+    closeMenu();
+    if (href.startsWith('/') && !href.startsWith('//')) {
+      e.preventDefault();
+      router.push(href);
+    }
+  }, [closeMenu, router]);
+
   // Support external triggers via custom window event
   useEffect(() => {
     const handleTrigger = () => {
@@ -387,6 +377,9 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
     const handleClickOutside = (event: MouseEvent) => {
       const target = event.target as Node;
+      if (target instanceof Element && target.closest('[data-menu-trigger]')) {
+        return;
+      }
       if (
         panelRef.current &&
         !panelRef.current.contains(target) &&
@@ -448,45 +441,26 @@ export const StaggeredMenu: React.FC<StaggeredMenuProps> = ({
 
         {/* Floating trigger header */}
         <header
-          className="staggered-menu-header fixed top-0 right-0 p-4 sm:p-5 bg-transparent pointer-events-none z-[110]"
+          className="staggered-menu-header fixed top-0 right-0 p-3 sm:p-4 bg-transparent pointer-events-none z-[120]"
           aria-label="Main navigation header"
         >
           <button
             ref={toggleBtnRef}
-            className="sm-toggle relative inline-flex items-center gap-[0.45rem] bg-zinc-900/95 hover:bg-zinc-800 text-white border border-emerald-500/40 hover:border-emerald-400 px-4 py-2.5 rounded-full cursor-pointer font-bold text-xs tracking-wider uppercase leading-none overflow-visible pointer-events-auto shadow-[0_0_15px_rgba(16,185,129,0.25)] hover:shadow-[0_0_20px_rgba(16,185,129,0.45)] transition-all"
-            aria-label={open ? 'Close menu' : 'Open menu'}
+            data-menu-trigger
+            className="sm-toggle relative inline-flex items-center gap-2 bg-zinc-950/95 dark:bg-zinc-900/95 hover:bg-zinc-900 text-white border-2 border-emerald-500/60 hover:border-emerald-400 px-3.5 py-1.5 sm:px-4 sm:py-2 rounded-full cursor-pointer font-bold text-xs tracking-wider uppercase leading-none overflow-visible pointer-events-auto shadow-[0_0_16px_rgba(16,185,129,0.35)] hover:shadow-[0_0_22px_rgba(16,185,129,0.55)] transition-all active:scale-95 z-[120]"
+            aria-label={open ? 'Close navigation menu' : 'Open navigation menu'}
             aria-expanded={open}
             aria-controls="staggered-menu-panel"
             onClick={toggleMenu}
             type="button"
           >
-            <span
-              ref={textWrapRef}
-              className="sm-toggle-textWrap relative inline-block h-[1em] overflow-hidden whitespace-nowrap w-[var(--sm-toggle-width,auto)] min-w-[var(--sm-toggle-width,auto)] font-bold tracking-wider uppercase text-[11px]"
-              aria-hidden="true"
-            >
-              <span ref={textInnerRef} className="sm-toggle-textInner flex flex-col leading-none">
-                {textLines.map((l, i) => (
-                  <span className="sm-toggle-line block h-[1em] leading-none" key={i}>
-                    {l}
-                  </span>
-                ))}
-              </span>
-            </span>
-
-            <span
-              ref={iconRef}
-              className="sm-icon relative w-[14px] h-[14px] shrink-0 inline-flex items-center justify-center [will-change:transform]"
-              aria-hidden="true"
-            >
-              <span
-                ref={plusHRef}
-                className="sm-icon-line absolute left-1/2 top-1/2 w-full h-[2px] bg-current rounded-[2px] -translate-x-1/2 -translate-y-1/2 [will-change:transform]"
-              />
-              <span
-                ref={plusVRef}
-                className="sm-icon-line sm-icon-line-v absolute left-1/2 top-1/2 w-full h-[2px] bg-current rounded-[2px] -translate-x-1/2 -translate-y-1/2 [will-change:transform]"
-              />
+            {open ? (
+              <X className="w-4 h-4 text-emerald-400 shrink-0" />
+            ) : (
+              <Menu className="w-4 h-4 text-emerald-400 shrink-0" />
+            )}
+            <span className="font-mono font-bold tracking-wider text-xs text-white">
+              {open ? 'CLOSE' : 'MENU'}
             </span>
           </button>
         </header>

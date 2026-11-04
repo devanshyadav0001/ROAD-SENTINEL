@@ -35,7 +35,7 @@ export default function MapPage() {
         <div
           className={cn(
             "absolute top-4 left-4 z-[1000] bg-white rounded-xl shadow-lg transition-all",
-            showFilters ? "p-5 w-64" : "p-0 w-auto"
+            showFilters ? "p-4 sm:p-5 w-64 max-w-[calc(100vw-32px)]" : "p-0 w-auto"
           )}
         >
           <button

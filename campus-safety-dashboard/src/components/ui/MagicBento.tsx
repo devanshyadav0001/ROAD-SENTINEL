@@ -75,7 +75,7 @@ const HEADER_CLASS =
   'flex min-w-0 items-center gap-2 text-[12px] leading-4 font-medium text-[color:var(--mb-muted)]';
 const ICON_CLASS = 'grid h-4 w-4 flex-none place-items-center text-[color:var(--mb-ink)]';
 const LABEL_CLASS = 'overflow-hidden text-ellipsis whitespace-nowrap text-xs font-semibold text-emerald-400';
-const VISUAL_CLASS = 'relative flex min-h-0 flex-1 flex-col justify-center [container-type:size]';
+const VISUAL_CLASS = 'relative flex min-h-[150px] flex-1 flex-col justify-center w-full my-1';
 const TEXT_CLASS = 'mt-auto flex flex-col gap-1';
 const TITLE_CLASS =
   'm-0 text-[15px] leading-5 font-semibold tracking-[-0.01em] text-[color:var(--mb-ink)]';
@@ -249,15 +249,19 @@ const AnalyticsVisual = () => {
   const dotRef = useRef<HTMLSpanElement | null>(null);
   const valueRef = useRef<HTMLSpanElement | null>(null);
   const noteRef = useRef<HTMLSpanElement | null>(null);
-  const [size, setSize] = useState<{ width: number; height: number } | null>(null);
+  const [size, setSize] = useState<{ width: number; height: number }>({ width: 480, height: 160 });
 
   useIsomorphicLayoutEffect(() => {
     const plot = plotRef.current;
     if (!plot) return;
     const update = () => {
-      const next = { width: plot.clientWidth, height: plot.clientHeight };
+      const rect = plot.getBoundingClientRect();
+      const w = rect.width > 20 ? rect.width : (plot.clientWidth > 20 ? plot.clientWidth : 480);
+      const h = rect.height > 20 ? rect.height : (plot.clientHeight > 20 ? plot.clientHeight : 160);
       setSize(previous =>
-        previous && previous.width === next.width && previous.height === next.height ? previous : next
+        previous && previous.width === Math.round(w) && previous.height === Math.round(h)
+          ? previous
+          : { width: Math.round(w), height: Math.round(h) }
       );
     };
     update();
@@ -267,9 +271,17 @@ const AnalyticsVisual = () => {
   }, []);
 
   const shape = useMemo(
-    () => (size && size.width > 4 && size.height > 4 ? curve(SPEED_POINTS, size.width, size.height) : null),
+    () => curve(SPEED_POINTS, size.width, size.height),
     [size]
   );
+
+  const limitY = useMemo(() => {
+    const top = 10;
+    const bottom = 22;
+    const low = 20;
+    const high = 80;
+    return top + (1 - (50 - low) / (high - low)) * (size.height - top - bottom);
+  }, [size.height]);
 
   const scrub = (event: React.PointerEvent) => {
     const plot = plotRef.current;
@@ -292,12 +304,18 @@ const AnalyticsVisual = () => {
     label.textContent = `${Math.round(value)} km/h`;
     const hour = Math.round(position * 2);
     note.textContent = `${hour.toString().padStart(2, '0')}:00 hrs (${value > 50 ? 'OVERSPEED' : 'NORMAL'})`;
+    note.className = value > 50
+      ? 'min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-rose-400 font-bold tabular-nums'
+      : 'min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-emerald-400 font-medium tabular-nums';
   };
 
   const rest = () => {
     if (chartRef.current) delete chartRef.current.dataset.scrub;
     if (valueRef.current) valueRef.current.textContent = `74 km/h`;
-    if (noteRef.current) noteRef.current.textContent = `P85 Peak (+48% over limit)`;
+    if (noteRef.current) {
+      noteRef.current.textContent = `P85 Peak (+48% over limit)`;
+      noteRef.current.className = 'min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-rose-400 font-medium tabular-nums';
+    }
   };
 
   const handlePointerDown = (event: React.PointerEvent<HTMLDivElement>) => {
@@ -317,30 +335,99 @@ const AnalyticsVisual = () => {
   return (
     <div
       ref={chartRef}
-      className={CHART_CLASS}
+      className="magic-bento__chart flex w-full flex-1 touch-none select-none flex-col min-h-[160px]"
       onPointerMove={scrub}
       onPointerDown={handlePointerDown}
       onPointerUp={handlePointerUp}
       onPointerCancel={handlePointerUp}
       onPointerLeave={rest}
     >
-      <div className={FIGURE_CLASS}>
-        <span ref={valueRef} className={FIGURE_VALUE_CLASS}>
+      <div className="flex min-w-0 items-baseline gap-2 whitespace-nowrap mb-1">
+        <span ref={valueRef} className="text-[20px] leading-[24px] font-black tracking-tight text-emerald-400 font-mono tabular-nums">
           74 km/h
         </span>
-        <span ref={noteRef} className={FIGURE_NOTE_CLASS}>
+        <span ref={noteRef} className="min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-rose-400 font-medium tabular-nums">
           P85 Peak (+48% over limit)
         </span>
       </div>
-      <div ref={plotRef} className={PLOT_CLASS}>
-        {shape && size && (
-          <svg viewBox={`0 0 ${size.width} ${size.height}`} aria-hidden="true">
-            <path className={CHART_AREA_CLASS} d={shape.area} />
-            <path className={CHART_LINE_CLASS} d={shape.line} pathLength="1" />
-          </svg>
-        )}
-        <span ref={scrubRef} className={SCRUB_CLASS}>
-          <span ref={dotRef} className={SCRUB_DOT_CLASS} />
+
+      <div ref={plotRef} className="relative w-full flex-1 min-h-[130px] h-[150px] sm:h-[180px] touch-none select-none overflow-visible">
+        <svg
+          viewBox={`0 0 ${size.width} ${size.height}`}
+          className="absolute inset-0 block h-full w-full overflow-visible"
+          aria-hidden="true"
+        >
+          <defs>
+            <linearGradient id="velocityGrad" x1="0%" y1="0%" x2="0%" y2="100%">
+              <stop offset="0%" stopColor="#10b981" stopOpacity="0.35" />
+              <stop offset="65%" stopColor="#10b981" stopOpacity="0.10" />
+              <stop offset="100%" stopColor="#10b981" stopOpacity="0.0" />
+            </linearGradient>
+            <filter id="emeraldGlow" x="-20%" y="-20%" width="140%" height="140%">
+              <feDropShadow dx="0" dy="0" stdDeviation="3" floodColor="#10b981" floodOpacity="0.6" />
+            </filter>
+          </defs>
+
+          {/* Grid lines */}
+          <line x1="0" y1={size.height * 0.25} x2={size.width} y2={size.height * 0.25} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+          <line x1="0" y1={size.height * 0.5} x2={size.width} y2={size.height * 0.5} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+          <line x1="0" y1={size.height * 0.75} x2={size.width} y2={size.height * 0.75} stroke="rgba(255,255,255,0.06)" strokeDasharray="3 3" />
+
+          {/* Speed Limit Reference Line (50 km/h) */}
+          <line
+            x1="0"
+            y1={limitY}
+            x2={size.width}
+            y2={limitY}
+            stroke="#f43f5e"
+            strokeWidth="1.2"
+            strokeDasharray="4 4"
+            opacity="0.8"
+          />
+          <text
+            x={size.width - 6}
+            y={limitY - 5}
+            textAnchor="end"
+            fill="#f43f5e"
+            fontSize="9"
+            fontWeight="bold"
+            fontFamily="monospace"
+            letterSpacing="0.05em"
+          >
+            LIMIT: 50 km/h
+          </text>
+
+          {/* Area Fill */}
+          <path d={shape.area} fill="url(#velocityGrad)" />
+
+          {/* Velocity Profile Line */}
+          <path
+            d={shape.line}
+            fill="none"
+            stroke="#10b981"
+            strokeWidth="2.5"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+            filter="url(#emeraldGlow)"
+          />
+
+          {/* Time axis markers at bottom */}
+          <text x="4" y={size.height - 4} fill="rgba(255,255,255,0.3)" fontSize="8.5" fontFamily="monospace">00:00</text>
+          <text x={size.width * 0.25} y={size.height - 4} fill="rgba(255,255,255,0.3)" fontSize="8.5" fontFamily="monospace" textAnchor="middle">06:00</text>
+          <text x={size.width * 0.5} y={size.height - 4} fill="rgba(255,255,255,0.3)" fontSize="8.5" fontFamily="monospace" textAnchor="middle">12:00</text>
+          <text x={size.width * 0.75} y={size.height - 4} fill="rgba(255,255,255,0.3)" fontSize="8.5" fontFamily="monospace" textAnchor="middle">18:00</text>
+          <text x={size.width - 4} y={size.height - 4} fill="rgba(255,255,255,0.3)" fontSize="8.5" fontFamily="monospace" textAnchor="end">24:00</text>
+        </svg>
+
+        {/* Scrub vertical guide line & dot */}
+        <span
+          ref={scrubRef}
+          className="pointer-events-none absolute top-0 bottom-4 left-0 w-px opacity-0 transition-opacity duration-150 bg-gradient-to-b from-emerald-400 via-emerald-500/80 to-transparent [[data-scrub]_&]:opacity-100 z-10"
+        >
+          <span
+            ref={dotRef}
+            className="absolute top-0 left-0 -mt-1.5 -ml-1.5 w-3 h-3 rounded-full bg-emerald-400 ring-4 ring-emerald-500/30 shadow-[0_0_12px_#10b981]"
+          />
         </span>
       </div>
     </div>
@@ -349,22 +436,43 @@ const AnalyticsVisual = () => {
 
 // Hourly traffic volume distributions (normalized 0-1)
 const TRIP_DENSITIES = [22, 35, 48, 88, 96, 75, 68, 92, 100, 84, 52, 38];
+const HOURS = ['00', '02', '04', '06', '08', '10', '12', '14', '16', '18', '20', '22'];
 
 const DashboardVisual = () => (
-  <div className={BARS_CLASS}>
-    <div className={FIGURE_CLASS}>
-      <span className={FIGURE_VALUE_CLASS}>156 Active Trips</span>
-      <span className={FIGURE_NOTE_CLASS}>Peak: 10:00 &amp; 16:00</span>
+  <div className="flex w-full flex-1 flex-col justify-between min-h-[140px] pt-1">
+    <div className="flex min-w-0 items-baseline gap-2 whitespace-nowrap mb-2">
+      <span className="text-[18px] leading-[22px] font-black tracking-tight text-emerald-400 font-mono tabular-nums">
+        156 Active Trips
+      </span>
+      <span className="min-w-0 overflow-hidden text-ellipsis text-[11.5px] leading-[14px] text-emerald-400/80 font-medium tabular-nums">
+        Peak: 10:00 &amp; 16:00 hrs
+      </span>
     </div>
-    <div className={BARS_PLOT_CLASS}>
-      {TRIP_DENSITIES.map((height, index) => (
-        <span
-          key={index}
-          className={BAR_CLASS}
-          data-peak={height === Math.max(...TRIP_DENSITIES) ? '' : undefined}
-          style={vars({ '--h': height / 100, '--i': index })}
-        />
-      ))}
+
+    <div className="flex items-end gap-1.5 sm:gap-2 w-full h-[90px] sm:h-[110px] min-h-[85px] px-1 pb-1">
+      {TRIP_DENSITIES.map((height, index) => {
+        const isPeak = height >= 90;
+        return (
+          <div
+            key={index}
+            className="relative flex-1 min-w-[8px] flex flex-col items-center justify-end h-full group cursor-pointer"
+          >
+            <div
+              className={`w-full rounded-t-sm transition-all duration-300 group-hover:brightness-125 ${
+                isPeak
+                  ? 'bg-emerald-400 shadow-[0_0_12px_rgba(16,185,129,0.55)]'
+                  : height >= 60
+                  ? 'bg-emerald-500/50'
+                  : 'bg-emerald-500/25'
+              }`}
+              style={{ height: `${height}%` }}
+            />
+            <span className="text-[8px] font-mono text-zinc-500 mt-1 opacity-75 group-hover:opacity-100 group-hover:text-emerald-400 transition-opacity">
+              {HOURS[index]}
+            </span>
+          </div>
+        );
+      })}
     </div>
   </div>
 );

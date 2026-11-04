@@ -9,7 +9,6 @@ const menuItems: StaggeredMenuItem[] = [
   { label: "Report Hazard", ariaLabel: "Report a road safety hazard", link: "/report" },
   { label: "Track Report", ariaLabel: "Track your report resolution status", link: "/track" },
   { label: "Live Map", ariaLabel: "View campus hazard heatmap and pins", link: "/map" },
-  { label: "Admin Portal", ariaLabel: "Access IIT Mandi administration dashboard", link: "http://localhost:3001/dashboard" },
 ];
 
 const socialItems: StaggeredMenuSocialItem[] = [
@@ -26,11 +25,11 @@ export default function Navbar() {
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div className="flex items-center justify-between h-16">
             {/* Logo */}
-            <Link href="/" className="flex items-center gap-2.5 group">
-              <div className="w-9 h-9 bg-primary rounded-xl flex items-center justify-center group-hover:bg-primary-dark transition-all shadow-sm">
-                <Shield className="w-5 h-5 text-white" />
+            <Link href="/" className="flex items-center gap-2 sm:gap-2.5 group">
+              <div className="w-8 h-8 sm:w-9 sm:h-9 bg-primary rounded-xl flex items-center justify-center group-hover:bg-primary-dark transition-all shadow-sm flex-shrink-0">
+                <Shield className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
               </div>
-              <span className="font-bold text-lg text-foreground tracking-tight">
+              <span className="font-bold text-sm sm:text-lg text-foreground tracking-tight whitespace-nowrap">
                 SafeRoads <span className="text-primary font-extrabold">IIT Mandi</span>
               </span>
             </Link>
