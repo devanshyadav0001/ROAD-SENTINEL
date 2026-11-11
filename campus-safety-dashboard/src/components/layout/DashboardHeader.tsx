@@ -1,10 +1,16 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Search, Bell, User, Shield } from "lucide-react";
 import { usePathname } from "next/navigation";
-import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
+import dynamic from "next/dynamic";
+
+// Dynamically import StaggeredMenu so gsap never blocks the header render
+const StaggeredMenu = dynamic(
+  () => import("@/components/ui/StaggeredMenu"),
+  { ssr: false }
+);
 
 const breadcrumbMap: Record<string, string> = {
   "/dashboard": "Overview",
@@ -16,7 +22,7 @@ const breadcrumbMap: Record<string, string> = {
   "/dashboard/settings": "Settings",
 };
 
-const dashboardMenuItems: StaggeredMenuItem[] = [
+const dashboardMenuItems = [
   {
     label: "Overview",
     ariaLabel: "Dashboard overview",
@@ -67,17 +73,46 @@ const dashboardMenuItems: StaggeredMenuItem[] = [
   },
 ];
 
-const dashboardSocialItems: StaggeredMenuSocialItem[] = [
+const dashboardSocialItems = [
   { label: "IIT Mandi", link: "https://iitmandi.ac.in" },
   { label: "API Docs (/docs)", link: "http://127.0.0.1:8000/docs" },
   { label: "Public Site (:3000)", link: "http://localhost:3000" },
   { label: "GitHub", link: "https://github.com/devanshyadav0001/ROAD-SENTINEL" },
 ];
 
+// Error boundary to prevent menu crashes from killing the header
+class MenuErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    console.warn("[StaggeredMenu] Failed to render:", error.message);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
 export default function DashboardHeader() {
   const pathname = usePathname();
   const title = breadcrumbMap[pathname] || "Dashboard";
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const triggerMenu = () => {
     if (typeof window !== "undefined") {
@@ -158,23 +193,27 @@ export default function DashboardHeader() {
         </div>
       </header>
 
-      {/* React Bits Staggered Shutter Menu Overlay */}
-      <StaggeredMenu
-        isFixed={true}
-        position="right"
-        items={dashboardMenuItems}
-        socialItems={dashboardSocialItems}
-        displaySocials={true}
-        displayItemNumbering={true}
-        colors={["#064e3b", "#059669", "#10b981"]}
-        accentColor="#10b981"
-        logoUrl="/shield-logo.svg"
-        menuButtonColor="#ffffff"
-        openMenuButtonColor="#10b981"
-        changeMenuColorOnOpen={true}
-        onMenuOpen={() => setMenuOpen(true)}
-        onMenuClose={() => setMenuOpen(false)}
-      />
+      {/* Staggered Shutter Menu — loaded dynamically so gsap never blocks the header */}
+      {mounted && (
+        <MenuErrorBoundary>
+          <StaggeredMenu
+            isFixed={true}
+            position="right"
+            items={dashboardMenuItems}
+            socialItems={dashboardSocialItems}
+            displaySocials={true}
+            displayItemNumbering={true}
+            colors={["#064e3b", "#059669", "#10b981"]}
+            accentColor="#10b981"
+            logoUrl="/shield-logo.svg"
+            menuButtonColor="#ffffff"
+            openMenuButtonColor="#10b981"
+            changeMenuColorOnOpen={true}
+            onMenuOpen={() => setMenuOpen(true)}
+            onMenuClose={() => setMenuOpen(false)}
+          />
+        </MenuErrorBoundary>
+      )}
     </>
   );
 }

@@ -140,3 +140,91 @@ body {
   --chart-scale-05: oklch(0.68 0.07 270);
   --chart-scale-pattern-color: oklch(0.145 0 0);
 }
+
+
+/* Staggered Shutter Menu Styles */
+.sm-scope .sm-panel-itemWrap {
+  position: relative;
+  overflow: hidden;
+  line-height: 1.25;
+}
+.sm-scope .staggered-menu-panel {
+  position: fixed;
+  top: 0;
+  right: 0;
+  width: clamp(340px, 85vw, 440px);
+  height: 100%;
+  background: rgba(9, 13, 11, 0.98);
+  backdrop-filter: blur(28px);
+  -webkit-backdrop-filter: blur(28px);
+  display: flex;
+  flex-direction: column;
+  padding: 1.5rem 1.75rem 1.75rem 1.75rem;
+  overflow-y: auto;
+  overscroll-behavior: contain;
+  z-index: 100;
+  border-left: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: -16px 0 48px -12px rgba(0, 0, 0, 0.85);
+  pointer-events: auto;
+}
+.sm-scope [data-position='left'] .staggered-menu-panel {
+  right: auto;
+  left: 0;
+  border-left: none;
+  border-right: 1px solid rgba(255, 255, 255, 0.08);
+  box-shadow: 16px 0 48px -12px rgba(0, 0, 0, 0.85);
+}
+.sm-scope .sm-prelayers {
+  position: fixed;
+  top: 0;
+  right: 0;
+  bottom: 0;
+  width: clamp(340px, 85vw, 440px);
+  pointer-events: none;
+  z-index: 90;
+}
+.sm-scope [data-position='left'] .sm-prelayers {
+  right: auto;
+  left: 0;
+}
+.sm-scope .sm-prelayer {
+  position: absolute;
+  top: 0;
+  right: 0;
+  height: 100%;
+  width: 100%;
+}
+.sm-scope .sm-panel-inner {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+}
+.sm-scope .sm-panel-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 0.25rem;
+}
+.sm-scope .sm-panel-itemLabel {
+  display: inline-block;
+  will-change: transform;
+  transform-origin: 50% 100%;
+}
+@media (max-width: 640px) {
+  .sm-scope .staggered-menu-panel {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+    padding: 1.25rem 1.25rem 1.5rem 1.25rem !important;
+  }
+  .sm-scope .sm-prelayers {
+    width: 100% !important;
+    max-width: 100% !important;
+    left: 0 !important;
+    right: 0 !important;
+  }
+}

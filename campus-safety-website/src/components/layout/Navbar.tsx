@@ -1,11 +1,17 @@
 "use client";
 
-import { useState } from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { Shield, ChevronRight } from "lucide-react";
-import StaggeredMenu, { StaggeredMenuItem, StaggeredMenuSocialItem } from "@/components/ui/StaggeredMenu";
+import dynamic from "next/dynamic";
 
-const menuItems: StaggeredMenuItem[] = [
+// Dynamically import StaggeredMenu so gsap never blocks the navbar render
+const StaggeredMenu = dynamic(
+  () => import("@/components/ui/StaggeredMenu"),
+  { ssr: false }
+);
+
+const menuItems = [
   {
     label: "Home",
     ariaLabel: "Go to home page",
@@ -32,15 +38,44 @@ const menuItems: StaggeredMenuItem[] = [
   },
 ];
 
-const socialItems: StaggeredMenuSocialItem[] = [
+const socialItems = [
   { label: "IIT Mandi", link: "https://iitmandi.ac.in" },
   { label: "Security: 01905-267000", link: "tel:01905267000" },
   { label: "Emergency: 112", link: "tel:112" },
   { label: "GitHub", link: "https://github.com/devanshyadav0001/ROAD-SENTINEL" },
 ];
 
+// Error boundary to prevent menu crashes from killing the navbar
+class MenuErrorBoundary extends React.Component<
+  { children: React.ReactNode },
+  { hasError: boolean }
+> {
+  constructor(props: { children: React.ReactNode }) {
+    super(props);
+    this.state = { hasError: false };
+  }
+
+  static getDerivedStateFromError() {
+    return { hasError: true };
+  }
+
+  componentDidCatch(error: Error) {
+    console.warn("[StaggeredMenu] Failed to render:", error.message);
+  }
+
+  render() {
+    if (this.state.hasError) return null;
+    return this.props.children;
+  }
+}
+
 export default function Navbar() {
   const [menuOpen, setMenuOpen] = useState(false);
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+  }, []);
 
   const triggerMenu = () => {
     if (typeof window !== "undefined") {
@@ -78,7 +113,7 @@ export default function Navbar() {
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
 
-              {/* Shutter Menu Button - Custom, Elevated, Professional */}
+              {/* Shutter Menu Button */}
               <button
                 data-menu-trigger
                 onClick={triggerMenu}
@@ -102,23 +137,27 @@ export default function Navbar() {
         </div>
       </nav>
 
-      {/* React Bits Staggered Shutter Menu */}
-      <StaggeredMenu
-        isFixed={true}
-        position="right"
-        items={menuItems}
-        socialItems={socialItems}
-        displaySocials={true}
-        displayItemNumbering={true}
-        colors={["#064e3b", "#059669", "#10b981"]}
-        accentColor="#10b981"
-        logoUrl="/shield-logo.svg"
-        menuButtonColor="#ffffff"
-        openMenuButtonColor="#10b981"
-        changeMenuColorOnOpen={true}
-        onMenuOpen={() => setMenuOpen(true)}
-        onMenuClose={() => setMenuOpen(false)}
-      />
+      {/* Staggered Shutter Menu — loaded dynamically so gsap never blocks the navbar */}
+      {mounted && (
+        <MenuErrorBoundary>
+          <StaggeredMenu
+            isFixed={true}
+            position="right"
+            items={menuItems}
+            socialItems={socialItems}
+            displaySocials={true}
+            displayItemNumbering={true}
+            colors={["#064e3b", "#059669", "#10b981"]}
+            accentColor="#10b981"
+            logoUrl="/shield-logo.svg"
+            menuButtonColor="#ffffff"
+            openMenuButtonColor="#10b981"
+            changeMenuColorOnOpen={true}
+            onMenuOpen={() => setMenuOpen(true)}
+            onMenuClose={() => setMenuOpen(false)}
+          />
+        </MenuErrorBoundary>
+      )}
     </>
   );
 }
