@@ -113,22 +113,22 @@ export default function Navbar() {
                 <ChevronRight className="w-3.5 h-3.5" />
               </Link>
 
-              {/* Shutter Menu Button */}
+              {/* Elevated Shutter Menu Trigger */}
               <button
                 data-menu-trigger
                 onClick={triggerMenu}
-                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.09] hover:border-emerald-500/40 text-zinc-300 hover:text-white text-xs font-medium tracking-wide transition-all duration-200 active:scale-95 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500/30"
+                className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold tracking-wide transition-all active:scale-95 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm flex-shrink-0"
                 title="Toggle Navigation Menu"
                 aria-label="Toggle Navigation Menu"
                 type="button"
               >
                 {/* 3-Tier Shutter Icon */}
                 <span className="flex flex-col justify-center gap-[3px] w-3.5 h-3" aria-hidden="true">
-                  <span className="block h-[1.5px] w-full bg-emerald-400 rounded-full transition-transform duration-200 group-hover:translate-x-0.5" />
-                  <span className="block h-[1.5px] w-2.5 bg-zinc-300 rounded-full transition-all duration-200 group-hover:w-full group-hover:bg-emerald-300" />
-                  <span className="block h-[1.5px] w-full bg-zinc-400 rounded-full transition-all duration-200 group-hover:bg-emerald-400" />
+                  <span className="block h-[1.5px] w-full bg-white rounded-full transition-transform duration-200 group-hover:translate-x-0.5" />
+                  <span className="block h-[1.5px] w-2.5 bg-emerald-100 rounded-full transition-all duration-200 group-hover:w-full group-hover:bg-white" />
+                  <span className="block h-[1.5px] w-full bg-white rounded-full" />
                 </span>
-                <span className="font-medium text-zinc-200 group-hover:text-white tracking-wide">
+                <span className="font-semibold text-white tracking-wide text-xs">
                   Menu
                 </span>
               </button>
@@ -136,6 +136,24 @@ export default function Navbar() {
           </div>
         </div>
       </nav>
+
+      {/* Floating Persistent Quick Menu Button — Available on BOTH Desktop and Mobile */}
+      <aside className="fixed bottom-6 right-6 z-40 pointer-events-auto">
+        <button
+          onClick={triggerMenu}
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-950/40 active:scale-95 transition-all text-xs font-bold tracking-wider border border-emerald-400/30 cursor-pointer hover:shadow-emerald-500/20"
+          title="Open Navigation Menu"
+          aria-label="Open Navigation Menu"
+          type="button"
+        >
+          <span className="flex flex-col justify-center gap-[2.5px] w-3.5 h-2.5" aria-hidden="true">
+            <span className="block h-[1.5px] w-full bg-white rounded-full" />
+            <span className="block h-[1.5px] w-2 bg-emerald-100 rounded-full" />
+            <span className="block h-[1.5px] w-full bg-white rounded-full" />
+          </span>
+          <span>MENU</span>
+        </button>
+      </aside>
 
       {/* Staggered Shutter Menu — loaded dynamically so gsap never blocks the navbar */}
       {mounted && (

@@ -122,7 +122,7 @@ export default function DashboardHeader() {
 
   return (
     <>
-      <header className="sticky top-0 z-40 w-full h-16 bg-[#0a0a0b]/95 backdrop-blur-xl border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 shadow-sm">
+      <header className="fixed top-0 left-0 right-0 z-40 w-full h-16 bg-[#0a0a0b]/95 backdrop-blur-xl border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 shadow-sm">
         {/* Left: Brand Logo & Section Breadcrumb */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-shrink-0">
           <Link href="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
@@ -171,38 +171,38 @@ export default function DashboardHeader() {
             <span className="text-xs font-medium text-zinc-300">Admin</span>
           </div>
 
-          {/* Elevated Shutter Menu Trigger — ALWAYS VISIBLE, NEVER CLIPPED */}
+          {/* Elevated Shutter Menu Trigger — ALWAYS VISIBLE ON ALL SCREENS */}
           <button
             data-menu-trigger
             onClick={triggerMenu}
-            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-semibold tracking-wide transition-all active:scale-95 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500/40 shadow-sm flex-shrink-0"
+            className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-lg bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-semibold tracking-wide transition-all active:scale-95 group cursor-pointer focus:outline-none focus:ring-2 focus:ring-emerald-400 shadow-sm flex-shrink-0"
             title="Toggle Navigation Menu"
             aria-label="Open Navigation Menu"
             type="button"
           >
             {/* 3-Tier Shutter Icon */}
             <span className="flex flex-col justify-center gap-[3px] w-3.5 h-3" aria-hidden="true">
-              <span className="block h-[1.5px] w-full bg-emerald-400 rounded-full transition-transform duration-200 group-hover:translate-x-0.5" />
-              <span className="block h-[1.5px] w-2.5 bg-zinc-300 rounded-full transition-all duration-200 group-hover:w-full group-hover:bg-emerald-300" />
-              <span className="block h-[1.5px] w-full bg-zinc-400 rounded-full transition-all duration-200 group-hover:bg-emerald-400" />
+              <span className="block h-[1.5px] w-full bg-white rounded-full transition-transform duration-200 group-hover:translate-x-0.5" />
+              <span className="block h-[1.5px] w-2.5 bg-emerald-100 rounded-full transition-all duration-200 group-hover:w-full group-hover:bg-white" />
+              <span className="block h-[1.5px] w-full bg-white rounded-full" />
             </span>
-            <span className="font-semibold text-zinc-100 group-hover:text-emerald-300 tracking-wide text-xs">
+            <span className="font-semibold text-white tracking-wide text-xs">
               Menu
             </span>
           </button>
         </div>
       </header>
 
-      {/* Floating Persistent Quick Menu Button for Mobile/Responsive */}
-      <aside className="fixed bottom-5 right-5 z-40 md:hidden pointer-events-auto">
+      {/* Floating Persistent Quick Menu Button — VISIBLE ON BOTH DESKTOP AND MOBILE */}
+      <aside className="fixed bottom-6 right-6 z-40 pointer-events-auto">
         <button
           onClick={triggerMenu}
-          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg active:scale-95 transition-all text-xs font-bold tracking-wider border border-emerald-400/30 cursor-pointer"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-xl shadow-emerald-950/40 active:scale-95 transition-all text-xs font-bold tracking-wider border border-emerald-400/30 cursor-pointer hover:shadow-emerald-500/20"
           title="Open Navigation Menu"
-          aria-label="Open Mobile Navigation Menu"
+          aria-label="Open Navigation Menu"
           type="button"
         >
-          <span className="flex flex-col justify-center gap-[2.5px] w-3 h-2.5" aria-hidden="true">
+          <span className="flex flex-col justify-center gap-[2.5px] w-3.5 h-2.5" aria-hidden="true">
             <span className="block h-[1.5px] w-full bg-white rounded-full" />
             <span className="block h-[1.5px] w-2 bg-emerald-100 rounded-full" />
             <span className="block h-[1.5px] w-full bg-white rounded-full" />
