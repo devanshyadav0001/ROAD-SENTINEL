@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Admin dashboard for managing campus road safety reports at IIT Mandi",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"

@@ -87,7 +87,7 @@ export default function DashboardHeader() {
 
   return (
     <>
-      <header className="h-14 border-b border-white/[0.07] flex items-center justify-between px-3 sm:px-6 bg-[#0a0a0b]/95 backdrop-blur-xl z-30 relative w-full">
+      <header className="h-14 shrink-0 border-b border-white/[0.07] flex items-center justify-between px-3 sm:px-6 bg-[#0a0a0b]/95 backdrop-blur-xl z-30 sticky top-0 w-full">
         {/* Left: Brand Logo & Section Breadcrumb */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-shrink-0">
           <Link href="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">

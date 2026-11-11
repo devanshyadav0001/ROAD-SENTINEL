@@ -17,7 +17,7 @@ export const metadata: Metadata = {
   description: "Report and track road safety hazards on IIT Mandi campus",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html
       lang="en"

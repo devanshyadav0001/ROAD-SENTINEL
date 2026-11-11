@@ -1,6 +1,6 @@
 import DashboardHeader from "@/components/layout/DashboardHeader";
 
-export default function DashboardLayout({ children }: LayoutProps<"/dashboard">) {
+export default function DashboardLayout({ children }: { children: React.ReactNode }) {
   return (
     <div className="flex flex-col h-screen overflow-hidden bg-background">
       <DashboardHeader />
