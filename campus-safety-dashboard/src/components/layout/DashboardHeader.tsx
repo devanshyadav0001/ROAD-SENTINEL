@@ -122,15 +122,15 @@ export default function DashboardHeader() {
 
   return (
     <>
-      <header className="h-14 shrink-0 border-b border-white/[0.07] flex items-center justify-between px-3 sm:px-6 bg-[#0a0a0b]/95 backdrop-blur-xl z-30 sticky top-0 w-full">
+      <header className="sticky top-0 z-40 w-full h-16 bg-[#0a0a0b]/95 backdrop-blur-xl border-b border-white/[0.08] flex items-center justify-between px-4 sm:px-6 shadow-sm">
         {/* Left: Brand Logo & Section Breadcrumb */}
         <div className="flex items-center gap-2.5 sm:gap-3.5 min-w-0 flex-shrink-0">
           <Link href="/dashboard" className="flex items-center gap-2.5 group flex-shrink-0">
-            <div className="w-8 h-8 bg-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-500 transition-colors shadow-sm">
+            <div className="w-9 h-9 bg-emerald-600 rounded-lg flex items-center justify-center group-hover:bg-emerald-500 transition-colors shadow-sm">
               <Shield className="w-4 h-4 text-white" />
             </div>
-            <span className="text-sm font-semibold text-white tracking-tight whitespace-nowrap">
-              SafeRoads <span className="text-emerald-400 font-bold">Admin</span>
+            <span className="text-sm sm:text-base font-bold text-white tracking-tight whitespace-nowrap">
+              SafeRoads <span className="text-emerald-400 font-extrabold">Admin</span>
             </span>
           </Link>
 
@@ -141,8 +141,8 @@ export default function DashboardHeader() {
         </div>
 
         {/* Right: Actions & Shutter Menu Trigger */}
-        <div className="flex items-center gap-1.5 sm:gap-2.5 flex-shrink-0">
-          {/* Search Input */}
+        <div className="flex items-center gap-1.5 sm:gap-3 ml-auto flex-shrink-0">
+          {/* Search Input - Desktop only */}
           <div className="relative hidden lg:block mr-1">
             <Search className="absolute left-2.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-zinc-500" />
             <input
@@ -152,9 +152,9 @@ export default function DashboardHeader() {
             />
           </div>
 
-          {/* Quick Notification Bell */}
+          {/* Quick Notification Bell - hidden on small mobile, visible sm+ */}
           <button
-            className="relative w-8 h-8 flex items-center justify-center rounded-lg hover:bg-white/[0.05] transition-colors text-zinc-400 hover:text-zinc-200"
+            className="hidden sm:flex relative w-8 h-8 items-center justify-center rounded-lg hover:bg-white/[0.05] transition-colors text-zinc-400 hover:text-zinc-200"
             title="Notifications"
             aria-label="Notifications"
             type="button"
@@ -163,19 +163,19 @@ export default function DashboardHeader() {
             <span className="absolute top-1.5 right-1.5 w-1.5 h-1.5 bg-red-500 rounded-full" />
           </button>
 
-          {/* User Profile Pill - hidden on small mobile */}
-          <div className="hidden sm:flex items-center gap-2 pl-2 border-l border-white/[0.08]">
+          {/* User Profile Pill - hidden on mobile */}
+          <div className="hidden md:flex items-center gap-2 pl-2 border-l border-white/[0.08]">
             <div className="w-7 h-7 bg-emerald-500/15 border border-emerald-500/30 rounded-full flex items-center justify-center">
               <User className="w-3.5 h-3.5 text-emerald-400" />
             </div>
             <span className="text-xs font-medium text-zinc-300">Admin</span>
           </div>
 
-          {/* Elevated Shutter Menu Trigger */}
+          {/* Elevated Shutter Menu Trigger — ALWAYS VISIBLE, NEVER CLIPPED */}
           <button
             data-menu-trigger
             onClick={triggerMenu}
-            className="inline-flex items-center gap-2 px-3 py-1.5 rounded-lg bg-white/[0.05] hover:bg-white/[0.09] border border-white/[0.1] hover:border-emerald-500/40 text-zinc-300 hover:text-white text-xs font-medium tracking-wide transition-all duration-200 active:scale-95 group cursor-pointer ml-1 focus:outline-none focus:ring-1 focus:ring-emerald-500/30"
+            className="inline-flex items-center gap-1.5 sm:gap-2 px-3 sm:px-3.5 py-1.5 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/20 border border-emerald-500/30 hover:border-emerald-500/50 text-emerald-400 hover:text-emerald-300 text-xs font-semibold tracking-wide transition-all active:scale-95 group cursor-pointer focus:outline-none focus:ring-1 focus:ring-emerald-500/40 shadow-sm flex-shrink-0"
             title="Toggle Navigation Menu"
             aria-label="Open Navigation Menu"
             type="button"
@@ -186,12 +186,30 @@ export default function DashboardHeader() {
               <span className="block h-[1.5px] w-2.5 bg-zinc-300 rounded-full transition-all duration-200 group-hover:w-full group-hover:bg-emerald-300" />
               <span className="block h-[1.5px] w-full bg-zinc-400 rounded-full transition-all duration-200 group-hover:bg-emerald-400" />
             </span>
-            <span className="font-medium text-zinc-200 group-hover:text-white tracking-wide">
+            <span className="font-semibold text-zinc-100 group-hover:text-emerald-300 tracking-wide text-xs">
               Menu
             </span>
           </button>
         </div>
       </header>
+
+      {/* Floating Persistent Quick Menu Button for Mobile/Responsive */}
+      <aside className="fixed bottom-5 right-5 z-40 md:hidden pointer-events-auto">
+        <button
+          onClick={triggerMenu}
+          className="inline-flex items-center gap-2 px-3.5 py-2 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white shadow-lg active:scale-95 transition-all text-xs font-bold tracking-wider border border-emerald-400/30 cursor-pointer"
+          title="Open Navigation Menu"
+          aria-label="Open Mobile Navigation Menu"
+          type="button"
+        >
+          <span className="flex flex-col justify-center gap-[2.5px] w-3 h-2.5" aria-hidden="true">
+            <span className="block h-[1.5px] w-full bg-white rounded-full" />
+            <span className="block h-[1.5px] w-2 bg-emerald-100 rounded-full" />
+            <span className="block h-[1.5px] w-full bg-white rounded-full" />
+          </span>
+          <span>MENU</span>
+        </button>
+      </aside>
 
       {/* Staggered Shutter Menu — loaded dynamically so gsap never blocks the header */}
       {mounted && (
